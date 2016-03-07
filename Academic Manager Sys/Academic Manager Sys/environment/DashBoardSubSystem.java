@@ -84,20 +84,20 @@ public class DashBoardSubSystem extends Sys{
 	private static void anyUserSubInputHandler(int n, Scanner inheritKeyboard, User logged, List<User> dB1, List<Project> dB2, List<Issue> dB3){
 		if(n == 1){
 			if(logged instanceof Teacher){
-				
+				println("undefined call");
 			}
 			else{
-				
+				println("undefined call");
 			}
 		}
 		else if(n == 2){
-			
+			println("undefined call");
 		}
 		else if(n == 3){
-			
+			println("undefined call");
 		}
 		else if (n == 4){
-			
+			println("undefined call");
 		}
 		else{
 			println("Operation Aborted! Just integers numbers in the range [1, 4] are valid.");

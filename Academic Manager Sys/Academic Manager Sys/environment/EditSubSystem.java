@@ -253,7 +253,7 @@ public class EditSubSystem extends Sys{
 			helperEditUserEmail(inheritKeyboard, logged, list);
 		}
 		else if(n == 3){
-				helperEditUserPassword(inheritKeyboard, logged, list);
+			helperEditUserPassword(inheritKeyboard, logged, list);
 		}
 		else if(n == 4){
 			//cancel call, do nothing.
