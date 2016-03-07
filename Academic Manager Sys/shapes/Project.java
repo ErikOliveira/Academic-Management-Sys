@@ -1,7 +1,9 @@
 package shapes;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import environment.users.*;
 
@@ -18,7 +20,8 @@ public class Project {
 	
 	public static final String status0 = "in drafting process";
 	public static final String status1 = "in progress";
-	public static final String status2 = "accomplishment";
+	public static final String status2 = "accomplished";
+	private String uniqueID;
 	private String title;
 	private String sponsor;
 	private String status; //¡I am not sure it's really needed!
@@ -33,6 +36,14 @@ public class Project {
 	
 	
 	//			----- Getters & Setters -----
+	
+	public String getUniqueID(){
+		return uniqueID;
+	}
+	
+	public void setUniqueID(String uniqueID){
+		this.uniqueID = uniqueID;
+	}
 	
 	public String getTitle() {
 		return title;
@@ -178,7 +189,7 @@ public class Project {
 			}
 			
 			else{
-				helperSubscribed(user);
+				System.out.println("Subscription aren't allowed after project already launched");
 			}
 		}
 	}
@@ -187,9 +198,19 @@ public class Project {
 
 	//		----- Constructors -----
 	
-	public Project(String title, String donor, String objective, String description, double budget, Date from, Date to){
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		DateFormat format = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+		return	this.uniqueID + "#" + this.title + "#" + this.sponsor + "#" + this.objective + "#" +
+				this.description + "#" + Double.toString(cost) + "#" + format.format(start) + "#" +
+				format.format(end) + "#" + this.status;
+	}
+
+	public Project(String uniqueID, String title, String donor, String objective, String description, double budget, Date from, Date to){
 		
 		this();
+		this.setUniqueID(uniqueID);
 		this.setTitle(title);
 		this.setSponsor(donor);
 		this.setObjective(objective);
@@ -200,7 +221,7 @@ public class Project {
 	}
 	
 	public Project() {
-		
+		this.uniqueID = "";
 		this.title = "";
 		this.sponsor = "";
 		this.status = Project.status0;

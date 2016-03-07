@@ -3,21 +3,9 @@ package environment.users;
 import shapes.User;
 
 public class PhD extends User{
-	
-	/*@Override
-	public boolean engage() {
-		// TODO Auto-generated method stub
-		return true;
-	}
 
-	@Override
-	public boolean unEngage() {
-		// TODO Auto-generated method stub
-		return true;
-	}*/
-
-	public PhD() {
+	public PhD(String uniqueID, String name, String eMail, String password) {
+		super(uniqueID, name, eMail, password);
 		// TODO Auto-generated constructor stub
 	}
-
 }

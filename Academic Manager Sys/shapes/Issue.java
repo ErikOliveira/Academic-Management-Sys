@@ -1,7 +1,10 @@
 package shapes;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 /* The class are structured in that four blocks:
  * 					- Basic Info: declarations of variables
@@ -10,10 +13,11 @@ import java.util.Date;
  * 					- Constructors
  */
 
-public class Issue {
+public class Issue implements Comparable<Issue>{
 	
 	//		----- Basic Information -----
 	
+	private String uniqueID;
 	private String title;
 	private String conference;
 	private Project related;
@@ -24,6 +28,16 @@ public class Issue {
 	
 	//		----- Getters & Setters -----
 	
+	public String getUniqueID() {
+		return uniqueID;
+	}
+
+
+	public void setUniqueID(String uniqueID) {
+		this.uniqueID = uniqueID;
+	}
+
+
 	public String getTitle() {
 		return title;
 	}
@@ -76,23 +90,56 @@ public class Issue {
 	public void claimCopyright(User user){
 		if(user != null){
 			this.authors.add(user);
+			Collections.sort(authors);
 		}
+	}
+	
+	public boolean lookforauthor(User user){
+		
+		for(int i = 0; i < this.authors.size(); ++i){
+			if(this.authors.get(i) == user)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public int compareTo(Issue o) {
+		// TODO Auto-generated method stub
+		return this.published.compareTo(o.published);
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		DateFormat format = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+		String authors = "";
+		
+		Collections.sort(this.authors);
+		for(int i = 0; i < this.authors.size(); ++i){
+			authors += "\t\t" + this.authors.get(i).getName() + "\n";
+		}
+		
+		return this.uniqueID + "#" + this.title + "#" + this.conference + "#" + authors + "#" +
+				format.format(published) + "#" + ((this.related == null)? "":this.related.getTitle());
 	}
 	
 	
 	
 	//		----- Constructors -----
-	
-	public Issue(String title, String conference, Date releaseDate){
+
+	public Issue(String uniqueID, String title, String conference, Date releaseDate){
 		
 		this();
+		this.setUniqueID(uniqueID);
 		this.setTitle(title);
 		this.setConference(conference);
 		this.setPublished(releaseDate);
 	}
 
 	public Issue() {
-
+		this.uniqueID = "";
 		this.title = "";
 		this.conference = "";
 		this.related = null;

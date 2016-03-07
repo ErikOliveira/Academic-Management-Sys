@@ -7,7 +7,7 @@ package shapes;
  * 					- Constructors
  */
 
-public abstract class User implements Authenticable{
+public abstract class User implements Authenticable, Comparable<User>{
 	
 	//		----- Basic Information -----
 	
@@ -51,6 +51,8 @@ public abstract class User implements Authenticable{
 		return uniqueID;
 	}
 	
+	
+	
 	//		----- Custom methods -----
 	
 	@Override
@@ -64,12 +66,27 @@ public abstract class User implements Authenticable{
 			this.password = itsNewPassword;
 		}
 	}
-
-	//		----- Constructors -----
 	
+	@Override
+	public int compareTo(User o) {
+		// TODO Auto-generated method stub
+		return this.name.compareTo(o.getName());
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.uniqueID + "#" + this.name + "#" + this.eMail;
+	}
+	
+	
+	
+	//		----- Constructors -----
+
 	public User(String uID, String name, String eMail, String password){
 		this();
 		setUniqueID(uID);
+		setName(name);
 		setEmail(eMail);
 		this.password = password;
 	}

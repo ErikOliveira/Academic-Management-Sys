@@ -1,15 +1,39 @@
 package environment;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+
+import environment.users.*;
+import shapes.*;
 
 public class Sys {
 
 	private Scanner keyboard;
 	private boolean execution;
+	protected static int authAttempts = 3;
 	
-	private void println(Object ob){
+	private User logged;
+	private User target;
+	private ArrayList<User> user;
+	private ArrayList<Project> projects;
+	private ArrayList<Issue> dataBase;
+	
+	protected static void println(Object ob){
 		System.out.println(ob);
+	}
+	
+	protected static void defaultTextErrorWithException(Exception e, String aditionalDetails){
+		println("Something went wrong! "+ aditionalDetails);
+		println(e);
+	}
+	
+	protected static void initateModule(String moduleName){
+		println("\n#########\t" + moduleName + "\t##########\n");
+	}
+	
+	protected static void terminateModule(){
+		println("\n####################################\n");
 	}
 	
 	private int readNumberLikeString() throws NumberFormatException {
@@ -24,10 +48,13 @@ public class Sys {
 		return typedString;
 	}
 	
+	
 	private void shutdownModule(){
 		String typedStrings = "";
-		println("\n#########    Shutdown     ##########\n");
+		
+		initateModule("Shutdown");
 		println("Do you wanna shutdown the system? Y/N");
+		
 		try{
 			typedStrings = readString();
 			boolean validAnswer1, validAnswer2;
@@ -36,8 +63,13 @@ public class Sys {
 			if( validAnswer1 ||  validAnswer2){
 				
 				if(validAnswer1){
-					execution = false;
-					println("System will shutdown soon... See u!");
+					if(logged instanceof Administrator){
+						execution = false;
+						println("System will shutdown soon... See u!");
+					}
+					else{
+						println("You not have rights to perform this! Only Administrator can shutdown the system, sorry! :(");
+					}
 				}
 				else{
 					println("System will continue to running, don't worry!");
@@ -48,21 +80,46 @@ public class Sys {
 			}
 		}
 		catch(NoSuchElementException e){
-			println(e.getStackTrace());
+			defaultTextErrorWithException(e, "There's no such entry in the input stream, that's all we know!");
 		}
 		finally{
-			println("\n####################################\n");
+			terminateModule();
 		}
 	}
 	
-	private void menuSubInputHandle(int n){
+	private void sysLogGenModule(){
+		initateModule(":: Summary Log ::");
+		println("----------\tCollaborators\t----------");
+		println("\ttotal: " + user.size());
+		
+		int proj[] = Handtools.countProjectsByState(projects);
+		println("\n-----------\tProjects\t----------\n" +
+					 "\tdrafting    : " + proj[0] +
+					 "\t\tprogress: " + proj[1] +
+					 "\n\taccomplished: " + proj[2] +
+					 "\t\ttotal\t: " + proj[3]);
+		
+		int iss[] = Handtools.countIssuePerType(dataBase);
+		println("\n----------\tIssues\t\t----------\n" +
+					 "\tarticles: " + iss[0] +
+					 "\tguindance: " + iss[1] +
+					 "\n\ttotal\t: " + iss[2]);
+		println("\n------------------------------------------");
+		terminateModule();
+	}
+	
+	private void menuSubInputHandler(int n){
 		
 		if(n == 1){
-			println("login module call here");
+			target = AuthSubSystem.loginModule(keyboard, user, logged);
+			if(target != null){
+				logged = target;
+			}
 		}
 
 		else if(n == 2){
-			println("undefined module");
+			println("test alocate not leave it here!....");
+			AllocateSubSystem.allocationModule(keyboard, user, projects, dataBase, logged);
 		}
 
 		else if(n == 3){
@@ -70,19 +127,19 @@ public class Sys {
 		}
 
 		else if(n == 4){
-			println("undefined module");
+			SearchSubSystem.mainModule(keyboard, user, projects);
 		}
 
 		else if(n == 5){
-			println("undefined module");
+			this.sysLogGenModule();
 		}
 
 		else if(n == 6){
-			println("undefined module");
+			logged = AuthSubSystem.logoutModule(keyboard, logged);
 		}
 
 		else if(n == 7){
-			shutdownModule();
+			this.shutdownModule();
 		}
 
 		else{
@@ -92,7 +149,7 @@ public class Sys {
 	
 	private void menuInputHandler(){
 		try{
-			menuSubInputHandle(this.readNumberLikeString());
+			menuSubInputHandler(this.readNumberLikeString());
 		}
 		catch(NumberFormatException e){
 			println("Invalid input! Provider numbers only.\n");
@@ -100,13 +157,13 @@ public class Sys {
 	}
 	
 	private void menuDisplay(){
-		println("###########\tMenu\t############\n");
+		initateModule(":: Menu ::");
 		println("Type the co-related number to access an operation!");
 		println("(1) - Login");
-		println("(2) - ");
+		println("(2) - DashBoard");
 		println("(3) - ");
-		println("(4) - ");
-		println("(5) - ");
+		println("(4) - Search");
+		println("(5) - Summary Log");
 		println("(6) - Logout");
 		println("(7) - Shutdown");
 	}
@@ -120,8 +177,16 @@ public class Sys {
 	
 	
 	public Sys() {
+		
 		this.keyboard = new Scanner(System.in);
 		this.execution = true;
+		this.logged = this.target = null;
+		this.user = new ArrayList<User>();
+		this.projects = new ArrayList<Project>();
+		this.dataBase = new ArrayList<Issue>();
+		
+		Administrator adm = new Administrator(Handtools.genUID(user));
+		this.user.add(adm);
 	}
 
 	public static void main(String[] args) {
